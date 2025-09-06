@@ -5,6 +5,7 @@ using UnityEngine;
 public class Playermovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float speed = 5.0f;
     public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
@@ -18,6 +19,8 @@ public class Playermovement : MonoBehaviour
 
     private Vector3 moveDirection = Vector3.zero;
     private float rotationX = 0;
+    private float horizontalInput;
+    private float forwardInput;
     private CharacterController characterController;
 
     private bool canMove = true;
@@ -25,7 +28,7 @@ public class Playermovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<characterController>();
+        characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -33,14 +36,23 @@ public class Playermovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // get player input
+        horizontalInput = Input.GetAxis("Horizontal");
+        forwardInput = Input.GetAxis("Vertical");
+
+        // Move the player forward
+        transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
+        transform.Translate(Vector3.right * Time.deltaTime * speed * horizontalInput);
+
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizonal") : 0;
+        float curSpeed = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
+        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeed);
+        moveDirection = (forward * curSpeed) + (right * curSpeed);
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
