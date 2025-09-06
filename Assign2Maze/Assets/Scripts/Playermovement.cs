@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Playermovement : MonoBehaviour
 {
+    public Camera playerCamera;
     public float moveSpeed = 5f;
     public float speed = 5.0f;
-    public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
     public float jumpPower = 7f;
